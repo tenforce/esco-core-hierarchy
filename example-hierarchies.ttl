@@ -1,0 +1,26 @@
+@prefix hier: <http://mu.semte.ch/vocabularies/hierarchy/> .
+@prefix mu: <http://mu.semte.ch/vocabularies/core/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+
+<http://data.europa.eu/esco/ConceptScheme/ESCO_Occupations> hier:hierarchy hier:1 , hier:2 .
+hier:1 a hier:Hierarchy ;
+    skos:prefLabel "ESCO hierarchy" ;
+    mu:uuid "e92305e6-301f-45b3-980d-ec51d0a3a3f8" ;
+    hier:default true ;
+    hier:path "<http://www.w3.org/2004/02/skos/core#broader>" .
+
+hier:2 a hier:Hierarchy ;
+    skos:prefLabel "ISCO" ;
+    mu:uuid "52029960-ac8c-4a45-b70e-dc821a558c08" ;
+    hier:path "( <http://www.w3.org/2004/02/skos/core#broader> | <http://data.europa.eu/esco/model#memberOfISCOGroup> )" ;
+    hier:restriction "?node <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.europa.eu/esco/model#ESCO_Occupations> ." .
+
+hier:unmapped a hier:Filter ;
+    skos:prefLabel "Unmapped concepts" ;
+    mu:uuid "cede3dd1-dc27-4b65-a90e-d8a54603fa14" ;
+    hier:filter "?descendant a skos:Concept. ?descendant ( #{PATH} )* ?node.\nFILTER NOT EXISTS { ?mapping <http://sem.tenforce.com/vocabularies/mapping-pilot/mapsFrom> ?descendant . \n?mapping <http://sem.tenforce.com/vocabularies/mapping-pilot/matchType> ?type .\n FILTER( ?type IN ( \"exact\", \"broader\", \"narrow\", \"close\" ) ) }" .
+hier:unchecked a hier:Filter ;
+    skos:prefLabel "Unchecked concepts" ;
+    mu:uuid "4e8fc305-82fe-4228-8bd1-1194c1018ffb" ;
+    hier:filter "?descendant a skos:Concept. ?descendant ( #{PATH} )* ?node.\n FILTER NOT EXISTS { ?mapping <http://sem.tenforce.com/vocabularies/mapping-pilot/mapsFrom> ?descendant . \n?mapping <http://sem.tenforce.com/vocabularies/mapping-pilot/status> \"check\" . }\n" .

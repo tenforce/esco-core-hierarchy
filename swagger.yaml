@@ -1,0 +1,183 @@
+swagger: '2.0'
+info:
+  title: mu-r-hierarchy
+  description: |
+    A JSON API to return the descendants and ancestors of a given node according to a given hierarchy in a triple store. The API returns the UUIDs of the ancestors/descendants and allows the addition of filters to restrict the elements returned.
+
+    A hierarchy description has to be provided in the database as triples. There are three ways to do this. 
+
+    1) Either a hierarchy resource is created with this structure:
+
+      @prefix hier: <http://mu.semte.ch/vocabularies/hierarchy/> .
+      @prefix mu: <http://mu.semte.ch/vocabularies/core/> .
+      @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+      <http://data.europa.eu/esco/ConceptScheme/ESCO_Occupations> hier:hierarchy hier:1 , hier:2 .
+        hier:1 a hier:Hierarchy ;
+        skos:prefLabel "ESCO hierarchy" ;
+        mu:uuid "e92305e6-301f-45b3-980d-ec51d0a3a3f8" ;
+        hier:default true ;
+        hier:path "( <http://www.w3.org/2004/02/skos/core#broader> | <http://data.europa.eu/esco/model#memberOfISCOGroup> )" .
+
+    2) Or an ESCO structure is created:
+      
+      @prefix hier: <http://mu.semte.ch/vocabularies/hierarchy/> .
+      @prefix esco: <http://data.europa.eu/esco/model#> .
+      @prefix mu: <http://mu.semte.ch/vocabularies/core/> .
+      @prefix dct: <http://purl.org/dc/terms/> .
+      @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+      @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+      <http://data.europa.eu/esco/concept-scheme/occupations/nace> rdf:type	esco:Structure ;
+        skos:prefLabel "NACE hierarchy" ;
+        dct:description "A taxonomy of the occupations in ESCO, organized according to the NACE codes of the occupations" ;
+        esco:structureFor <http://data.europa.eu/esco/concept-scheme/occupations> ;
+        esco:codelist <http://data.europa.eu/esco/ConceptScheme/NACE> ;
+        esco:codedProperty <http://data.europa.eu/esco/model#NACECode>;
+        mu:uuid "3c687c31-4996-48bf-9986-17ecfe231018" .
+
+    3) Or no description is provided in the database at all, at which point the hierarchy service falls back to the use of skos:broader relations between skos:Concepts in the same skos:ConceptScheme.
+
+    Filter descriptions can also be provided in the database. This is done in the following way:
+
+      @prefix hier: <http://mu.semte.ch/vocabularies/hierarchy/> .
+      @prefix esco: <http://data.europa.eu/esco/model#> .
+      @prefix mu: <http://mu.semte.ch/vocabularies/core/> .
+      @prefix dct: <http://purl.org/dc/terms/> .
+      @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+      @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+      hier:NotInStatus a hier:Filter ;
+        <http://www.w3.org/2004/02/skos/core#prefLabel> "NotInStatus concepts" ;
+        mu:uuid "6bb6aa3d-3ee7-4028-96cf-076628d6e7de" ;
+        hier:filter """?descendant a <http://www.w3.org/2004/02/skos/core#Concept> . 
+        \t?descendant ( #{PATH} )* ?node .
+        \tFILTER NOT EXISTS 
+        \t{ 
+        \t\t?task <http://translation.escoportal.eu/vocab/concept> ?descendant . 
+        \t\t?task <http://translation.escoportal.eu/vocab/language> "#{language}" .
+        \t\t?task <http://translation.escoportal.eu/vocab/status> ?status
+        \tFILTER( ?status IN (#{statusses}) )
+        } """ .
+      
+    In this description, #{PATH} will be replaced by the path to follow from a concept to its parent. Other parameters are shown through #{PARAMETER}. These parameters have to be provided (non-optional) in the requests to the hierarchy service (see filter-X in parameters).
+  version: "1.0.0"
+host: mu.semte.ch
+schemes:
+  - http
+basePath: /
+produces:
+  - application/vnd.api+json
+paths:
+  /hierarchies/{id}/target/{concept}:
+    get:
+      summary: get descendants
+      description: Allows fetching the descendants of the given concepts according to the given hierarchy
+      parameters:
+        - name: id
+          in: path
+          description: the UUID of the hierarchy to use
+          required: true
+          type: string
+        - name: concept
+          in: path
+          description: the UUID of the concept to ask the descendants for
+          required: true
+          type: string
+        - name: levels
+          in: query
+          description: the maximum number of levels down a descendent can be
+          default: 1
+          minimum: 1
+          required: false
+          type: number
+        - name: filter
+          in: query
+          description: the UUID of the filter to use to restrict the descendents. Filters are stored in the database according to the filter spec.
+          required: false
+          type: string
+        - name: filter-X
+          in: query
+          description: a number of extra parameters can be specified in this format, where X is the name of the parameter to be replaced as a variable in the filter\'s sparql query.
+          required: false
+          type: string          
+      tags:
+        - Hierarchy
+      responses:
+        200:
+          description: A list of UUIDs of concepts who are descendants of the given concept according to the given hierarchy
+          schema:
+            $ref: '#/definitions/ConceptsList'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /hierarchies/{id}/ancestors/{concept}:
+    get:
+      summary: get ancestors
+      description: Allows fetching the ancestors of the given concepts according to the given hierarchy
+      parameters:
+        - name: id
+          in: path
+          description: the UUID of the hierarchy to use
+          required: true
+          type: string
+        - name: concept
+          in: path
+          description: the UUID of the concept to ask the ancestors for
+          required: true
+          type: string
+        - name: filter
+          in: query
+          description: the UUID of the filter to use to restrict the ancestors. Filters are stored in the database according to the filter spec.
+          required: false
+          type: string
+        - name: filter-X
+          in: query
+          description: a number of extra parameters can be specified in this format, where X is the name of the parameter to be replaced as a variable in the filter\'s sparql query.
+          required: false
+          type: string          
+      tags:
+        - Hierarchy
+      responses:
+        200:
+          description: A list of UUIDs of concepts that are ancestors according to the hierarchy that match the filter. Note that these concepts are not ordered.
+          schema:
+            $ref: '#/definitions/ConceptsList'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  ConceptsList:
+    type: object
+    description: a list of shortened resource results. Only the resource and its type are provided, not the actual resource description.
+    properties:
+      data:
+        type: array
+        description: JSON API wrapper object
+        items:
+          type: object
+          description: the actual list of items
+          properties:
+            id:
+              type: string
+              description: Resource UUID.
+            type:
+              type: string
+              description: Resource type.
+    example:
+      data:
+        - id: e92305e6-301f-45b3-980d-ec51d0a3a3f8
+          type: concept
+        - id: 52029960-ac8c-4a45-b70e-dc821a558c08
+          type: concept
+
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
