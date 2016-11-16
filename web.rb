@@ -84,6 +84,30 @@ get '/hierarchies/:id/ancestors/:concept' do
 end
 
 ###
+# clears the cache
+###
+post '/hierarchies/cache/clear' do
+  content_type 'application/vnd.api+json'
+
+  CACHE = {}
+
+  {
+    status: "ok"
+  }.to_json
+end
+
+###
+# Returns the size of the cache in number of cached items
+###
+get '/hierarchies/cache/size' do
+  content_type 'application/vnd.api+json'
+
+  {
+    size: CACHE.length
+  }.to_json
+end
+
+###
 # Helpers
 ###
 
