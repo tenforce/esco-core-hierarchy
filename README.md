@@ -7,17 +7,17 @@ Hierarchies are resources of their own that describe which paths to follow in th
 Note: the hierarchy service is graph agnostic, it only looks in the default graph of the sparql endpoint.
 
 ## Fetch descendants
-The following GET call takes the hierarchy description identified by the uuid *'e92305e6-301f-45b3-980d-ec51d0a3a3f8'* and uses its description to find the descendents of the concept with uuid *'1DE4A2A8-C998-11E5-AF4F-DBC8669C75B0'* up to level 2.
+The following GET call takes the hierarchy (structure) description identified by the uuid *'e92305e6-301f-45b3-980d-ec51d0a3a3f8'* and uses its description to find the descendants of the concept with uuid *'1DE4A2A8-C998-11E5-AF4F-DBC8669C75B0'* up to level 2.
 
 ```
-http://service-path/hierarchies/e92305e6-301f-45b3-980d-ec51d0a3a3f8/target/1DE4A2A8-C998-11E5-AF4F-DBC8669C75B0?levels=2
+http://service-path/hierarchies/e92305e6-301f-45b3-980d-ec51d0a3a3f8/1DE4A2A8-C998-11E5-AF4F-DBC8669C75B0/descendants?levels=2
 ```
 
 ## Fetch ancestors
-The following GET call takes the hierarchy description identified by the uuid *'e92305e6-301f-45b3-980d-ec51d0a3a3f8'* and fetches all the ancestors of the concept with uuid *'e92305e6-301f-45b3-980d-ec51d0a3a3f8'*
+The following GET call takes the hierarchy (structure) description identified by the uuid *'e92305e6-301f-45b3-980d-ec51d0a3a3f8'* and fetches all the ancestors of the concept with uuid *'e92305e6-301f-45b3-980d-ec51d0a3a3f8'*
 
 ```
-http://service-path/hierarchies/e92305e6-301f-45b3-980d-ec51d0a3a3f8/ancestors/1DE4A2A8-C998-11E5-AF4F-DBC8669C75B0
+http://service-path/hierarchies/e92305e6-301f-45b3-980d-ec51d0a3a3f8/1DE4A2A8-C998-11E5-AF4F-DBC8669C75B0/ancestors
 ```
 
 ## Hierarchy description

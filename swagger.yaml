@@ -67,17 +67,17 @@ basePath: /
 produces:
   - application/vnd.api+json
 paths:
-  /hierarchies/{id}/target/{concept}:
+  /hierarchies/{structure_id}/{concept_id}/descendants:
     get:
       summary: get descendants
       description: Allows fetching the descendants of the given concepts according to the given hierarchy
       parameters:
-        - name: id
+        - name: structure_id
           in: path
           description: the UUID of the hierarchy to use
           required: true
           type: string
-        - name: concept
+        - name: concept_id
           in: path
           description: the UUID of the concept to ask the descendants for
           required: true
@@ -110,17 +110,17 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /hierarchies/{id}/ancestors/{concept}:
+  /hierarchies/{structure_id}/{concept_id}/ancestors:
     get:
       summary: get ancestors
       description: Allows fetching the ancestors of the given concepts according to the given hierarchy
       parameters:
-        - name: id
+        - name: structure_id
           in: path
           description: the UUID of the hierarchy to use
           required: true
           type: string
-        - name: concept
+        - name: concept_id
           in: path
           description: the UUID of the concept to ask the ancestors for
           required: true

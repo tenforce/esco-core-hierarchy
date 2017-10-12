@@ -1,0 +1,1 @@
+require_relative 'hierarchy/sinatra_helpers'

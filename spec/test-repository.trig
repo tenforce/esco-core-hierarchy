@@ -1,0 +1,32 @@
+@prefix esco:   <http://data.europa.eu/esco/model#>.
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#>.
+@prefix mu:   <http://mu.semte.ch/vocabularies/core/>.
+
+<http://mu.semte.ch/application> {
+  <http://localhost/structures/1> a esco:Structure;
+  mu:uuid "8d96e5dd-2056-4e97-b3a5-1428b0c2a848";
+  esco:codeList <http://localhost/lists/bar>;
+  esco:structureFor <http://localhost/esco/skills>.
+
+  <http://localhost/structures/2> a esco:Structure;
+    mu:uuid "8d96e4dd-2056-4e97-b3a5-1428b0c2a848";
+    esco:codeList <http://localhost/lists/foo>;
+    esco:structureFor <http://localhost/esco/skills>.
+
+  <http://localhost/concept/1> a skos:Concept;
+   skos:topConceptOf <http://localhost/lists/bar>;
+   mu:uuid "da646914-3f9d-11e7-a919-92ebcb67fe33".
+
+  <http://localhost/concept/2> a skos:Concept;
+   skos:topConceptOf <http://localhost/lists/bar>;
+   mu:uuid "da646bb2-3f9d-11e7-a919-92ebcb67fe33".
+
+   <http://localhost/concept/3> a skos:Concept;
+   skos:topConceptOf <http://localhost/lists/bar>;
+   mu:uuid "da646fc2-3f9d-11e7-a919-92ebcb67fe33".
+
+     <http://localhost/concept/1> a skos:Concept;
+      skos:topConceptOf <http://localhost/lists/foo>;
+      mu:uuid "da646914-3f9d-11e7-a919-92ebcb67fe33".
+
+}
