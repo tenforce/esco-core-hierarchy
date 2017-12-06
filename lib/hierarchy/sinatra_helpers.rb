@@ -121,8 +121,7 @@ module Hierarchy
     <#{MU_CORE.uuid}> \"#{id}\" ;
     <#{ESCO.codedProperty}> ?codedProperty ;
     <#{ESCO.structureFor}> ?structureFor ;
-    <#{ESCO.codeList}> ?codeList ;
-    <http://sem.tenforce.com/vocabularies/etms/fetchChildren> ?fetchChildren .
+    <#{ESCO.codeList}> ?codeList .
 }"
       parse_structure_result(query(query), forAncestors)
     end
